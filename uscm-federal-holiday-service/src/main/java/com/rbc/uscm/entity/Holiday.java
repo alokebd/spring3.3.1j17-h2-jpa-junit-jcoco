@@ -5,6 +5,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import io.swagger.annotations.ApiModelProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,7 +24,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Holiday{
-	private static final long serialVersionUID = 53L;
 	
 	@Id
 	@Column(name = "id")
@@ -35,7 +35,6 @@ public class Holiday{
 	private String description;
 	 
 	@Column(name = "official_date")
-	//@JsonSerialize(using = HolidayDateSerializer.class)
 	private LocalDate officialDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)

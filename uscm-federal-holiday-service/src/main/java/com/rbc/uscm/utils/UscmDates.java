@@ -1,19 +1,10 @@
 package com.rbc.uscm.utils;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
 
 public final class UscmDates {
-	 public static final String DATE_FORMAT = "MMMM dd, yyyy, EEEE";
-	 private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
 	 
-	 private UscmDates() {
-		 
-	 }
-	 
-	 public static LocalDate newLocalDate() {
-	        return LocalDate.now();
+	 private UscmDates() { 
 	 }
 	 
 	 /**
@@ -25,10 +16,6 @@ public final class UscmDates {
 	  */
 	 public static LocalDate newLocalDate(int year, int month, int day) {
 	     return LocalDate.of(year, month, day);
-	 }
-	 
-	 public static LocalDate newLocalDate(int year, Month month, int day) {
-	        return LocalDate.of(year, month, day);
 	 }
 
 }

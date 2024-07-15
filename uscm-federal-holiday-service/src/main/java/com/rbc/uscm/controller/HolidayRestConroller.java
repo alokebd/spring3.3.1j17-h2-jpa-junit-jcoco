@@ -25,10 +25,12 @@ import com.rbc.uscm.service.HolidayService;
 import com.rbc.uscm.service.LocaleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/api")
-@Api("/api")
+@Api(value="Holiday-Resource")
 public class HolidayRestConroller {
 	private static final Logger logger = LoggerFactory.getLogger(HolidayRestConroller.class);
 
@@ -38,7 +40,11 @@ public class HolidayRestConroller {
 	@Autowired
 	private LocaleService localeService;
 	
-	@ApiOperation(value = "Holidays list - find by locale.")
+	@ApiOperation(value = "Holidays list - find by locale." ,response = List.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
 	@GetMapping("/v1/holidays/{countryCode}")
 	public ResponseEntity<List<ReponseHolidayDto>> getHolidaysByCountryCode(@PathVariable(value = "countryCode") String code) {
 		Optional<Country> county = localeService.findByCode(code);
@@ -53,20 +59,28 @@ public class HolidayRestConroller {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "Add holiday for locale.")
+	@ApiOperation(value = "Add holiday for locale.", response = ReponseHolidayDto.class)
+	@ApiResponses(value = {
+	            @ApiResponse(code = 200, message = "Successfully created"),
+	            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+	})
 	@PostMapping("/v1/holidays/{code}")
 	public ResponseEntity<ReponseHolidayDto> saveHolidayByCountryCode(@PathVariable(value = "code") String code,
 			@RequestBody RequestHolidayDto holidayResource) {
 		Optional<Country> county = localeService.findByCode(code);
 		if (county.isPresent()) {
 			ReponseHolidayDto newHolidayDto = holidayService.save(holidayResource, county.get());
-			return new ResponseEntity<>(newHolidayDto, HttpStatus.CREATED);
+			return new ResponseEntity<>(newHolidayDto, HttpStatus.OK);
 		}
 		logger.error("Entered REST Holiday saving API (" + code + ") ...");
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
-	@ApiOperation(value = "Update holiday by holiday Id.")
+	@ApiOperation(value = "Update holiday by holiday Id.", response = ReponseHolidayDto.class)
+	@ApiResponses(value = {
+	            @ApiResponse(code = 201, message = "Successfully updated"),
+	            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+	})
 	@PutMapping("/v1/holidays/{code}/{holidayId}")
 	public ResponseEntity<ReponseHolidayDto> updateHolidayById(
 			@PathVariable(value = "code") String code, 

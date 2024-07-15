@@ -21,17 +21,23 @@ import com.rbc.uscm.exception.ResourceNotFoundException;
 import com.rbc.uscm.service.LocaleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/api")
-@Api("/api")
+@Api(value="Country-Resource")
 public class LocaleRestController {
 	private static final Logger logger = LoggerFactory.getLogger(LocaleRestController.class);
 	
 	@Autowired
 	private LocaleService localeService;
 		
-	@ApiOperation(value = "All aviable locales.")
+	@ApiOperation(value = "All aviable locales.",response = List.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
 	@GetMapping("/v1/countries")
 	public ResponseEntity<List<CountryDto>> getAllCountries(){
 		List<CountryDto> coutries = localeService.findAll();
@@ -42,16 +48,24 @@ public class LocaleRestController {
 		return new ResponseEntity<>(coutries, HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "Add locale.")
+	@ApiOperation(value = "Add locale.", response = CountryDto.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully created country"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
 	@PostMapping("/v1/countries")
 	public ResponseEntity<CountryDto> create(@RequestBody CountryDto countryDto) {
-	logger.debug("Entered REST Locale API saving data ...");
-	   CountryDto newCountryDto = localeService.save(countryDto);
-	   return new ResponseEntity<>(newCountryDto, HttpStatus.CREATED);
+		logger.debug("Entered REST Locale API saving data ...");
+	    CountryDto newCountryDto = localeService.save(countryDto);
+	   return new ResponseEntity<>(newCountryDto, HttpStatus.OK);
 	}
 	
 	
-	@ApiOperation(value = "Updatefor locale by cournty code.")
+	@ApiOperation(value = "Updatefor locale by cournty code.", response = CountryDto.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully updated"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
 	@PutMapping("/v1/countries/{code}")
 	public ResponseEntity<CountryDto> update(
 			@PathVariable(value = "code") String code, 
