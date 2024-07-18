@@ -31,7 +31,7 @@ import com.rbc.uscm.testutils.HttpHelper;
 @RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @SpringBootTest(classes = UscmFederalHolidayServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class HolidayRestConrollerTest {
+public class HolidayRestConrollerTest{
 	@Autowired
     private TestRestTemplate testRestTemplate;
 
@@ -114,10 +114,8 @@ public class HolidayRestConrollerTest {
         		ReponseHolidayDto.class);
         //Then
         assertEquals(response.getStatusCode(), HttpStatus.OK);
-        
-        //Integer holidayId = response.getBody().getHolidayId();
-
-        //GIVEN
+          
+        //Given
     	String updateUri = FEDERAL_HOLIDAY_URL.concat("/")
     			.concat(ApplicationTestConstants.CODE)
     			.concat("/")
@@ -141,7 +139,7 @@ public class HolidayRestConrollerTest {
     
     @Test
     public void test_3_should_find_all_holidays_by_country_code()  {
-        //Given
+        //Given - country
     	String countryURL = String.format(ApplicationTestConstants.LOCALE_URL, port);
     	String strCountry = "UK";
     	String strCode = "uk";
@@ -155,7 +153,7 @@ public class HolidayRestConrollerTest {
         		CountryDto.class);
         //Then
         assertEquals(countryRes.getStatusCode(), HttpStatus.OK);
-        //Given
+        //Given - holiday info for country
     	String uri = FEDERAL_HOLIDAY_URL.concat("/").concat(strCode);
         String url = String.format(uri, port);
         RequestHolidayDto createRequest = ApplicationTestConstants.createRequestHolidayDto();
@@ -185,7 +183,7 @@ public class HolidayRestConrollerTest {
     
     
     @Test
-    public void test_5_should_not_found_find_all_holidays_by_country_code()  {
+    public void test_4_should_not_found_find_all_holidays_by_country_code()  {
         //Given
     	String countryURL = String.format(ApplicationTestConstants.LOCALE_URL, port);
     	String strCountry = "EPC";
@@ -214,7 +212,7 @@ public class HolidayRestConrollerTest {
         //Then
         assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
         
-        //Given
+        //Given - country code not present
     	uri = FEDERAL_HOLIDAY_URL.concat("/").concat("22");
         url = String.format(uri, port);
        //When
@@ -225,5 +223,56 @@ public class HolidayRestConrollerTest {
 				new ParameterizedTypeReference<List<ReponseHolidayDto>>() {});
         //Then
         assertEquals(responseList.getStatusCode(), HttpStatus.NOT_FOUND);
+    }
+    
+    @Test
+    public void test_5_should_return_404_when_update()  {
+    	 //Given - country
+    	String url1 = String.format(ApplicationTestConstants.LOCALE_URL, port);
+    	String strCountry = "Italy";
+    	String strCode = "it";
+        CountryDto createCountryDto = ApplicationTestConstants.givenCountryDto(ApplicationTestConstants.givenCountry(strCountry, strCode));
+        HttpEntity<CountryDto> requestCountryDto = HttpHelper.getHttpEntity(createCountryDto);
+        //When
+        ResponseEntity<CountryDto> countryRes = testRestTemplate.exchange(
+        		url1, 
+        		HttpMethod.POST, 
+        		requestCountryDto, 
+        		CountryDto.class);
+        //Then
+        assertEquals(countryRes.getStatusCode(), HttpStatus.OK);
+        assertNotNull(countryRes.getBody());
+        
+        //Given - holiday info by country code
+    	String uri2 = FEDERAL_HOLIDAY_URL.concat("/").concat(strCode);
+        String url2 = String.format(uri2, port);
+        RequestHolidayDto createHoliday = ApplicationTestConstants.createRequestHolidayDto();
+        HttpEntity<RequestHolidayDto> createHolidatReq = HttpHelper.getHttpEntity(createHoliday);
+        //When
+        ResponseEntity<ReponseHolidayDto> createHolidayResp = testRestTemplate.exchange(
+        		url2, 
+        		HttpMethod.POST, 
+        		createHolidatReq, 
+        		ReponseHolidayDto.class);
+        
+        //Then
+        assertEquals(createHolidayResp.getStatusCode(), HttpStatus.OK);
+        
+        //Given - country code not present but holiday id is
+        String uri3 = FEDERAL_HOLIDAY_URL.concat("/")
+    			.concat("2k")
+    			.concat("/")
+    			.concat(createHolidayResp.getBody().getHolidayId().toString());
+        String url3 = String.format(uri3, port);
+        RequestHolidayDto updateHolidayRequest = updatedRequestHolidayDto();
+        HttpEntity<RequestHolidayDto> updateHolidayReq = HttpHelper.getHttpEntity(updateHolidayRequest);
+        //When
+        ResponseEntity<ReponseHolidayDto> updatedHolidayRes = testRestTemplate.exchange(
+        		url3, 
+         		HttpMethod.PUT, 
+         		updateHolidayReq, 
+         		ReponseHolidayDto.class);
+        //Then
+        assertEquals(updatedHolidayRes.getStatusCode(), HttpStatus.NOT_FOUND);
     }
 }

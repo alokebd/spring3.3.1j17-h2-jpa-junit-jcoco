@@ -32,14 +32,14 @@ public class LocaleRestControllerTest {
 
     @LocalServerPort
     private int port;
-    
-  
-            
+                
     @Test
     public void test_1_should_create_country()  {
         //Given
+    	String strCountry = "France";
+    	String strCode = "fa";
         String url = String.format(ApplicationTestConstants.LOCALE_URL, port);
-        CountryDto createRequest = ApplicationTestConstants.givenCountryDto(ApplicationTestConstants.givenCountry());
+        CountryDto createRequest = ApplicationTestConstants.givenCountryDto(ApplicationTestConstants.givenCountry(strCountry,strCode));
         HttpEntity<CountryDto> request = HttpHelper.getHttpEntity(createRequest);
         //When
         ResponseEntity<CountryDto> response = testRestTemplate.exchange(
@@ -50,8 +50,8 @@ public class LocaleRestControllerTest {
         //Then
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertNotNull(response.getBody());
-        assertEquals(response.getBody().getCode(), ApplicationTestConstants.CODE);
-        assertEquals(response.getBody().getName(), ApplicationTestConstants.NAME);
+        assertEquals(response.getBody().getCode(), "fa");
+        assertEquals(response.getBody().getName(), "France");
     }
     
     @Test

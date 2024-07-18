@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ReponseHolidayDto {
+	
 	private Integer holidayId;
 	private LocalDate officialDate;
+	
 	private String description;
 }

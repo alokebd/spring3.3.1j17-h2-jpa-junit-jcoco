@@ -2,6 +2,9 @@ package com.rbc.uscm.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,5 +20,9 @@ public class RequestHolidayDto {
 	@Min(value = 1900, message = "year should be greater than 1900")
     @Max(value = 5000, message = "year should be less than 5000")
 	private Integer year;
+	
+	@NotBlank (message = "Invalid Description: description cannot be blank")
+	@NotNull(message = "Invalid Description: description is NULL")
+    @Size(min = 5, max = 255, message = "Invalid Description: Must be of 5 - 255 characters")
 	private String description;
 }

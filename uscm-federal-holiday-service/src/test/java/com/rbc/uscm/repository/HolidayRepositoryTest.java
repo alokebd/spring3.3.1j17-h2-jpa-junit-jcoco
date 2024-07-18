@@ -19,7 +19,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class HolidayRepositoryTest {
+public class HolidayRepositoryTest{
 	@Autowired
 	private HolidayRepository holidayRepository;
 	@Autowired

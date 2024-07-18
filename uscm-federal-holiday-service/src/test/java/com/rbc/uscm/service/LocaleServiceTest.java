@@ -14,8 +14,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.rbc.uscm.dto.CountryDto;
 import com.rbc.uscm.entity.Country;
+import com.rbc.uscm.exception.ResourceAlreadyExistsException;
 import com.rbc.uscm.repository.LocaleRepository;
 import com.rbc.uscm.testutils.ApplicationTestConstants;
+
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,6 +83,6 @@ public class LocaleServiceTest {
         assertEquals(ApplicationTestConstants.givenCountryDto(country), localeService.update(ApplicationTestConstants.givenCountryDto(country), 1));
     }
    
-
+    
 
 }

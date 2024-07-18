@@ -52,5 +52,5 @@ public class CountryDtoTest {
      public void test_4_should_deserialized_code() throws IOException {
         assertThat(this.json.parseObject(JSON_TO_DESERIALIZE).getCode()).isEqualTo(ApplicationTestConstants.CODE);
      }
-
+	 
 }

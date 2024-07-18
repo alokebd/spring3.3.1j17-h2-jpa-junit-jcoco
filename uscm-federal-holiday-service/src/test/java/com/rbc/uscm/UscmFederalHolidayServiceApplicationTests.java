@@ -2,6 +2,7 @@ package com.rbc.uscm;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.assertj.core.api.Assertions;
 
@@ -22,5 +23,10 @@ class UscmFederalHolidayServiceApplicationTests {
 		
 		Assertions.assertThat(holidayRestConroller).isNotNull();
 	}
+	
+	@Test
+	public void applicationStarts() {
+		UscmFederalHolidayServiceApplication.main(new String[] {});
+	 }
 
 }

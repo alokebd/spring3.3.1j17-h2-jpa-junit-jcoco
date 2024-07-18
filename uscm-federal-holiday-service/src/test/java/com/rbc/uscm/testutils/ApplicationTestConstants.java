@@ -26,6 +26,10 @@ public class ApplicationTestConstants {
     public static final int UPDATED_MONTH=2;
     public static final String UPDATED_DESCRIPTION ="Family day";
     
+    public static final String ERROR_NOT_FOUND = "Resource not exist with id:";
+    public static final String ERROR_ALREADY_FOUND = "Resource already exist with register id:";
+
+    
     public static final String LOCALE_URL = "http://localhost:%s/api/v1/countries";
        
     public static Country givenCountry() {

@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.rbc.uscm.dto.CountryDto;
 import com.rbc.uscm.entity.Country;
-import com.rbc.uscm.exception.ResourceNotFoundException;
 import com.rbc.uscm.service.LocaleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -33,7 +33,11 @@ public class LocaleRestController {
 	@Autowired
 	private LocaleService localeService;
 		
-	@ApiOperation(value = "All aviable locales.",response = List.class)
+	@ApiOperation(value = "All aviable locales.", 
+			response = CountryDto.class, 
+			responseContainer = "List")
+	@Operation(summary = "Get all aviable locales.", 
+	description = "Returns a CountryDto (name and code) ")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
@@ -41,14 +45,17 @@ public class LocaleRestController {
 	@GetMapping("/v1/countries")
 	public ResponseEntity<List<CountryDto>> getAllCountries(){
 		List<CountryDto> coutries = localeService.findAll();
+		/*
 		if (coutries == null || coutries.isEmpty()) {
 			logger.error("REST Locale API .. no data found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		}*/
 		return new ResponseEntity<>(coutries, HttpStatus.OK);
 	}
-	
-	@ApiOperation(value = "Add locale.", response = CountryDto.class)
+	@Operation(summary = "Add locale (i.e. county).", 
+			description = "Returns a CountryDto (name and code) which is saved")
+	@ApiOperation(value = "Add locale.", 
+	response = CountryDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully created country"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
@@ -60,8 +67,10 @@ public class LocaleRestController {
 	   return new ResponseEntity<>(newCountryDto, HttpStatus.OK);
 	}
 	
-	
-	@ApiOperation(value = "Updatefor locale by cournty code.", response = CountryDto.class)
+	@Operation(summary = "Update locale by a specific country code", 
+			description = "Returns the saved CountryDto (name and code) ")
+	@ApiOperation(value = "Updatefor locale by cournty code.", 
+	response = CountryDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully updated"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
@@ -69,7 +78,7 @@ public class LocaleRestController {
 	@PutMapping("/v1/countries/{code}")
 	public ResponseEntity<CountryDto> update(
 			@PathVariable(value = "code") String code, 
-			@RequestBody CountryDto countryDto) throws ResourceNotFoundException {
+			@RequestBody CountryDto countryDto){
 		logger.debug("Entered REST Locale API (" + code + ") ...");
 		Optional<Country> dBcounty = localeService.findByCode(code);
 		if (dBcounty.isPresent()) {
